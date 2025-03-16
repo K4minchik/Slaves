@@ -19,9 +19,10 @@ bot.remove_command("help")
 connection = sqlite3.connect("server.db")
 cursor = connection.cursor()
 
-t_get_slave_role = 1198295566787027004 #Роль - Рабовладелец
-t_slave_role = 1198295390252974211 #Роль - раб
-t_clear_role = 1198295666410135572 #Роль - Свобоный человек
+t_get_slave_role = 1350857825622032496 #Роль - Рабовладелец
+t_slave_role = 1350857506934489128 #Роль - раб
+t_clear_role = 1158012500432924693 #Роль - Свобоный человек
+chanel = 1152899806570754120
 
 banned = []
 
@@ -31,7 +32,7 @@ banned = []
 async def on_ready():
     #Если бот зашел в сеть
     earning_f.start()
-    channel = bot.get_channel(1198294998412705913) # ID Канала где игра
+    channel = bot.get_channel(chanel) # ID Канала где игра
     # БД
     cursor.execute("""CREATE TABLE IF NOT EXISTS users (
                    name TEXT, 
@@ -83,7 +84,7 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
-    clear_role = discord.utils.get(member.guild.roles, id=1198295666410135572) #Роль - Свобоный человек
+    clear_role = discord.utils.get(member.guild.roles, id=t_clear_role) #Роль - Свобоный человек
     await member.add_roles(clear_role)
     if cursor.execute(f"SELECT id FROM users WHERE id = {member.id}").fetchone() is None:
         cost = random.randint(20, 50)
@@ -96,7 +97,7 @@ async def on_member_join(member):
 @bot.command()
 @commands.has_role(t_get_slave_role)
 async def info(ctx, member: discord.Member = None):
-    channel = bot.get_channel(1198294998412705913) # ID Канала где игра
+    channel = bot.get_channel(chanel) # ID Канала где игра
     # Проверка на бан
     if ctx.author.id in banned:
         await channel.send(f"**{ctx.author}**, ты в бане")
@@ -115,16 +116,16 @@ async def info(ctx, member: discord.Member = None):
 @bot.command()
 @commands.has_role(t_clear_role)
 async def get_role(ctx):
-    channel = bot.get_channel(1198294998412705913) # ID Канала где игра
+    channel = bot.get_channel(chanel) # ID Канала где игра
     # Проверка на бан
     if ctx.author.id in banned:
         await channel.send(f"**{ctx.author}**, ты в бане")
     else:
         #Рандомно выдаём роль
 
-        get_slave_role = discord.utils.get(ctx.author.guild.roles, id=1198295566787027004) #Роль - Рабовладелец
-        slave_role = discord.utils.get(ctx.author.guild.roles, id=1198295390252974211) #Роль - раб
-        clear_role = discord.utils.get(ctx.author.guild.roles, id=1198295666410135572) #Роль - Свобоный человек
+        get_slave_role = discord.utils.get(ctx.author.guild.roles, id=t_get_slave_role) #Роль - Рабовладелец
+        slave_role = discord.utils.get(ctx.author.guild.roles, id=t_slave_role) #Роль - раб
+        clear_role = discord.utils.get(ctx.author.guild.roles, id=t_clear_role) #Роль - Свобоный человек
 
         if random.random() < 0.3:
             await channel.send(embed=discord.Embed(description=f'{ctx.author} - Рабовладелец', colour=discord.Color.green()))
@@ -150,7 +151,7 @@ async def get_role(ctx):
 @bot.command()
 @commands.has_role(t_get_slave_role)
 async def shop(ctx):
-    channel = bot.get_channel(1198294998412705913) # ID Канала где игра
+    channel = bot.get_channel(chanel) # ID Канала где игра
     # Проверка на бан
     if ctx.author.id in banned:
         await channel.send(f"**{ctx.author}**, ты в бане")
@@ -169,7 +170,7 @@ async def shop(ctx):
 @bot.command()
 @commands.has_role(t_get_slave_role)
 async def buy(ctx, member: discord.Member):
-    channel = bot.get_channel(1198294998412705913) # ID Канала где игра
+    channel = bot.get_channel(chanel) # ID Канала где игра
     # Проверка на бан
     if ctx.author.id in banned:
         await channel.send(f"**{ctx.author}**, ты в бане")
@@ -202,10 +203,10 @@ async def run(ctx):
     if ctx.author.id in banned:
         await channel.send(f"**{ctx.author}**, ты в бане")
     else:
-        channel = bot.get_channel(1198294998412705913) # ID Канала где игра
+        channel = bot.get_channel(chanel) # ID Канала где игра
 
-        slave_role = discord.utils.get(ctx.author.guild.roles, id=1198295390252974211) #Роль - раб
-        clear_role = discord.utils.get(ctx.author.guild.roles, id=1198295666410135572) #Роль - Свобоный человек
+        slave_role = discord.utils.get(ctx.author.guild.roles, id=t_slave_role) #Роль - раб
+        clear_role = discord.utils.get(ctx.author.guild.roles, id=t_clear_role) #Роль - Свобоный человек
         
         cursor.execute("SELECT * FROM shop")
         
@@ -237,7 +238,7 @@ async def run(ctx):
 @bot.event
 @commands.has_role(t_slave_role)
 async def on_command_error(ctx, error):
-    channel = bot.get_channel(1198294998412705913) # ID Канала где игра
+    channel = bot.get_channel(chanel) # ID Канала где игра
     if isinstance(error, commands.CommandOnCooldown):
         retry_after = str(datetime.timedelta(seconds=error.retry_after)).split('.')[0]
         await channel.send(embed=discord.Embed(description=f'**{ctx.author}**, ты можешь сбежать снова через **{retry_after}**', colour=discord.Color.red()))
@@ -249,10 +250,10 @@ async def rising(ctx):
     if ctx.author.id in banned:
         await channel.send(f"**{ctx.author}**, ты в бане")
     else:
-        channel = bot.get_channel(1198294998412705913) # ID Канала где игра
-        slave_role = discord.utils.get(ctx.guild.roles, id=1198295390252974211) #Роль - раб
-        clear_role = discord.utils.get(ctx.guild.roles, id=1198295666410135572) #Роль - Свобоный человек
-        get_slave_role = discord.utils.get(ctx.guild.roles, id=1198295566787027004) #Роль - Рабовладелец
+        channel = bot.get_channel(chanel) # ID Канала где игра
+        slave_role = discord.utils.get(ctx.guild.roles, id=t_slave_role) #Роль - раб
+        clear_role = discord.utils.get(ctx.guild.roles, id=t_clear_role) #Роль - Свобоный человек
+        get_slave_role = discord.utils.get(ctx.guild.roles, id=t_get_slave_role) #Роль - Рабовладелец
 
         if random.random() < 0.9:
             await channel.send(embed=discord.Embed(description=f'Восстание прошло успешно!', colour=discord.Color.green()))
@@ -276,7 +277,7 @@ async def rising(ctx):
 @bot.event
 @commands.has_role(t_slave_role)
 async def on_command_error(ctx, error):
-    channel = bot.get_channel(1198294998412705913) # ID Канала где игра
+    channel = bot.get_channel(chanel) # ID Канала где игра
     if isinstance(error, commands.CommandOnCooldown):
         retry_after = str(datetime.timedelta(seconds=error.retry_after)).split('.')[0]
         await channel.send(embed=discord.Embed(description=f'**{ctx.author}**, восстание можно сделать через **{retry_after}**', colour=discord.Color.red()))
@@ -284,7 +285,7 @@ async def on_command_error(ctx, error):
 @bot.command()
 @commands.has_role(t_get_slave_role)
 async def update(ctx, member: discord.Member):
-    channel = bot.get_channel(1198294998412705913) # ID Канала где игра
+    channel = bot.get_channel(chanel) # ID Канала где игра
     # Проверка на бан
     if ctx.author.id in banned:
         await channel.send(f"**{ctx.author}**, ты в бане")
@@ -313,7 +314,7 @@ async def clear(ctx, amount = 100):
 
 @bot.command()
 async def help(ctx):
-    channel = bot.get_channel(1198294998412705913) # ID Канала где игра
+    channel = bot.get_channel(chanel) # ID Канала где игра
     # Проверка на бан
     if ctx.author.id in banned:
         await channel.send(f"**{ctx.author}**, ты в бане")
