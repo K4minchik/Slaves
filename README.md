@@ -1,4 +1,4 @@
-**Supports Russian language**
+**Supports ONLY Russian language**
 
 The game itself is great, but there are planned features.
 
@@ -6,5 +6,6 @@ The game itself is great, but there are planned features.
 
 ## Preview
 ![изображение](https://github.com/user-attachments/assets/f8d1af8f-2537-4c8d-b2cc-5273558132a2)
+
 
 
